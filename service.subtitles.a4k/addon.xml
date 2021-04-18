@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon id="service.subtitles.a4k" name="a4k" provider-name="iLeoDo" version="0.0.1">
+ <requires>
+  <import addon="xbmc.python" version="3.0.0"/>
+  <import addon="script.module.beautifulsoup4" version="4.6.2"/>
+  <import addon="script.module.kodi-six"/>
+  <import addon="vfs.rar" version="3.0.0"/>
+  <import addon="script.module.requests" version="2.22.0"/>
+ </requires>
+ <extension library="service.py" point="xbmc.subtitle.module"/>
+ <extension point="xbmc.addon.metadata">
+  <summary lang="en">
+   A4k.net Subtitle
+  </summary>
+  <summary lang="zh">
+   A4k.net 字幕
+  </summary>
+  <description lang="en">
+   Search and download subtitles from www.a4k.net
+  </description>
+  <description lang="zh">
+   从 www.a4k.net 下载字幕
+  </description>
+  <platform>
+   all
+  </platform>
+  <license>
+   GNU GENERAL PUBLIC LICENSE. Version 2, June 1991
+  </license>
+  <assets>
+   <icon>
+    icon.png
+   </icon>
+   <clearlogo>
+    logo.png
+   </clearlogo>
+   <screenshot>
+    resources/media/screenshot_1.jpg
+   </screenshot>
+   <screenshot>
+    resources/media/screenshot_2.jpg
+   </screenshot>
+   <screenshot>
+    resources/media/screenshot_3.jpg
+   </screenshot>
+  </assets>
+  <news>
+   V0.0.1 (2021-04-18)
+- Initial Version
+  </news>
+ </extension>
+</addon>
