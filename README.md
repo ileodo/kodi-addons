@@ -23,8 +23,15 @@ Search and download subtitles from [www.a4k.net](www.a4k.net)
 > Please check [base_adapter.py](https://github.com/ileodo/kodi-addons/blob/main/service.subtitles.a4k/base_adapter.py) for more details.
 > I'm considering to make this framework as an seperate module.
 
+
 # Issue
 Please enter an issue if you enter any problem.
 
 # Contribution
 This project is open for contribution, please open PR if you'd like to.
+
+Check list before raising PR:
+- has an descriptive commit message
+- had run `make release` and `make publish`
+- has minimal unittest
+
