@@ -11,6 +11,24 @@ def cp(src, dst):
     if os.path.exists(src):
         shutil.copyfile(src, dst)
 
+def remove_blanks_in_xml(file):
+    from xml.dom import minidom
+    from xml.dom.minidom import Node
+
+    def remove_blanks(node):
+        for x in node.childNodes:
+            if x.nodeType == Node.TEXT_NODE:
+                if x.nodeValue:
+                    x.nodeValue = x.nodeValue.strip()
+            elif x.nodeType == Node.ELEMENT_NODE:
+                remove_blanks(x)
+
+    xml = minidom.parse(file)
+    remove_blanks(xml)
+    xml.normalize()
+    with open(file, 'w') as result:
+        result.write(xml.toprettyxml(indent=" " * 4))
+
 def release(addon, version, destination_base):
     # Create dest folder
     dest = os.path.join(destination_base, addon)
@@ -57,6 +75,7 @@ def update_addon(addon):
 
     with open(f"{addon}/addon.xml", "w") as file_addon:
         file_addon.write(soup.prettify())
+    remove_blanks_in_xml(f"{addon}/addon.xml")
 
 
 if __name__ == "__main__":

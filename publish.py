@@ -83,6 +83,7 @@ class Generator:
         # save file
         self._save_file(final_soup.prettify().encode("utf-8"),
                         file=xml_path)
+        self.remove_blanks_in_xml(xml_path)
 
     def _generate_md5_file(self, xml_path: str, md5_path: str):
         # create a new md5 hash
@@ -100,6 +101,23 @@ class Generator:
             # oops
             print(f"An error occurred saving {file} file!\n{e}")
 
+    def remove_blanks_in_xml(self, file):
+        from xml.dom import minidom
+        from xml.dom.minidom import Node
+
+        def remove_blanks(node):
+            for x in node.childNodes:
+                if x.nodeType == Node.TEXT_NODE:
+                    if x.nodeValue:
+                        x.nodeValue = x.nodeValue.strip()
+                elif x.nodeType == Node.ELEMENT_NODE:
+                    remove_blanks(x)
+
+        xml = minidom.parse(file)
+        remove_blanks(xml)
+        xml.normalize()
+        with open(file, 'w') as result:
+            result.write(xml.toprettyxml(indent=" " * 4))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
