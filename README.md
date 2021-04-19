@@ -16,8 +16,9 @@ This addon repo
 Search and download subtitles from [www.a4k.net](www.a4k.net) 
 - Support .zip/.rar file
 - Recusively searching subtitle files in .zip/.rar file
+- Show file extension as prefix in the result list
 
-> ** For developers: **
+> For developers:  
 > This addon provided an extensible framework, so you can easily develop new subtitle addon. 
 > Please check [base_adapter.py](https://github.com/ileodo/kodi-addons/blob/main/service.subtitles.a4k/base_adapter.py) for more details.
 > I'm considering to make this framework as an seperate module.
