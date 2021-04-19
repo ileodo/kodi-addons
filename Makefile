@@ -11,7 +11,7 @@ test: venv
 
 release: venv
 	source .venv/bin/activate && \
-    python3 release.py -u -d repo \
+    python3 release.py -u -d dest \
     	service.subtitles.a4k \
     	repository.ileodo-kodi-addons
 

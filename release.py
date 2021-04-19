@@ -69,6 +69,9 @@ if __name__ == "__main__":
                         help='release destination')
     args = parser.parse_args()
 
+    if not os.path.exists(args.dest):
+        os.mkdir(args.dest)
+
     for addon in args.addons:
         version = get_version(addon)
         if args.update_change_log:
