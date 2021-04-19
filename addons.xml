@@ -9,7 +9,7 @@
     https://github.com/ileodo/kodi-addons/raw/main/addons.xml.md5
    </checksum>
    <datadir zip="true">
-    https://github.com/ileodo/kodi-addons/raw/main/repo
+    https://github.com/ileodo/kodi-addons/raw/main/dest
    </datadir>
   </extension>
   <extension point="xbmc.addon.metadata">
