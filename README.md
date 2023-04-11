@@ -5,6 +5,8 @@
 ![Kodi Nexus](https://img.shields.io/badge/Kodi-Nexus-blue?logo=kodi)
 ![Kodi Matrix](https://img.shields.io/badge/Kodi-Matrix-blue?logo=kodi)
 
+<a href="https://www.buymeacoffee.com/Ileodo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 ## Introduction
 This Kodi addons repo provides some personal use addons. Some of the addons are inspired by [xbmc-addons-chinese](https://github.com/taxigps/xbmc-addons-chinese)
 
