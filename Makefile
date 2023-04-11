@@ -1,3 +1,5 @@
+DEST:=dest
+
 venv: .venv/touchfile
 
 .venv/touchfile: requirements-dev.txt
@@ -6,20 +8,29 @@ venv: .venv/touchfile
 	touch .venv/touchfile
 
 test: venv
-	source .venv/bin/activate && \
-	python3 -m pytest tests
+	. .venv/bin/activate && \
+	python3 -m pytest tests -vv
 
-release: venv
-	source .venv/bin/activate && \
-    python3 release.py -u -d dest \
-    	service.subtitles.a4k \
-    	repository.ileodo-kodi-addons
+release: venv pre-release
+	. .venv/bin/activate && \
+	python3 scripts/release.py -u -d ${DEST} \
+			service.subtitles.a4k \
+			repository.ileodo-kodi-addons
 
 publish: venv
-	source .venv/bin/activate && \
-	python3 publish.py \
-		service.subtitles.a4k \
-		repository.ileodo-kodi-addons
+	. .venv/bin/activate && \
+	python3 scripts/publish.py \
+			service.subtitles.a4k \
+			repository.ileodo-kodi-addons
+
+format: venv
+	. .venv/bin/activate && \
+	black . -l 88
+
+pre-release: venv
+	. .venv/bin/activate && \
+	python3 -Bc "import pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.py[co]')]" && \
+	python3 -Bc "import pathlib; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__')]"
 
 clean:
 	rm -rf .venv
