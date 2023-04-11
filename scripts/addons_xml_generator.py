@@ -29,9 +29,9 @@ import sys
 
 class Generator:
     """
-        Generates a new addons.xml file from each addons addon.xml file
-        and a new addons.xml.md5 hash file. Must be run from the root of
-        the checked-out repo. Only handles single depth folder structure.
+    Generates a new addons.xml file from each addons addon.xml file
+    and a new addons.xml.md5 hash file. Must be run from the root of
+    the checked-out repo. Only handles single depth folder structure.
     """
 
     def __init__(self):
@@ -43,34 +43,32 @@ class Generator:
 
     def _generate_addons_file(self):
         # addon list
-        addons = os.listdir(".")
+        addons = os.listdir("..")
 
-        excludedFolders = {'.svn': '.svn', '.git': '.git', 'repo': 'repo'}
+        excludedFolders = {".svn": ".svn", ".git": ".git", "repo": "repo"}
         # final addons text
-        addons_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<addons>\n"
+        addons_xml = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<addons>\n'
+        )
         # loop thru and add each addons addon.xml file
         for addon in sorted(addons):
             try:
                 # skip any file or .svn folder or .git folder
-                if (not os.path.isdir(addon) or addon in excludedFolders): continue
+                if not os.path.isdir(addon) or addon in excludedFolders:
+                    continue
                 # create path
                 _path = os.path.join(addon, "addon.xml")
                 # split lines for stripping
-                if sys.version_info[0] >= 3:
-                    xml_lines = open(_path, "r", encoding='utf-8').read().splitlines()
-                else:
-                    xml_lines = open(_path, "r").read().splitlines()
+                xml_lines = open(_path, "r", encoding="utf-8").read().splitlines()
                 # new addon
                 addon_xml = ""
                 # loop thru cleaning each line
                 for line in xml_lines:
                     # skip encoding format line
-                    if (line.find("<?xml") >= 0): continue
+                    if line.find("<?xml") >= 0:
+                        continue
                     # add line
-                    if sys.version < '3':
-                        addon_xml += unicode(line.rstrip() + "\n", "UTF-8")
-                    else:
-                        addon_xml += line.rstrip() + "\n"
+                    addon_xml += line.rstrip() + "\n"
                 # we succeeded so add to our final addons.xml text
                 addons_xml += addon_xml.rstrip() + "\n\n"
             except Exception as e:
@@ -79,20 +77,24 @@ class Generator:
         # clean and add closing tag
         addons_xml = addons_xml.strip() + "\n</addons>\n"
         # save file
-        self._save_file(addons_xml.encode("UTF-8"), file="addons.xml")
+        self._save_file(addons_xml.encode("UTF-8"), file="../addons.xml")
 
     def _generate_md5_file(self):
         # create a new md5 hash
         try:
             import md5
-            m = md5.new(open("addons.xml", "r").read()).hexdigest()
+
+            m = md5.new(open("../addons.xml", "r").read()).hexdigest()
         except ImportError:
             import hashlib
-            m = hashlib.md5(open("addons.xml", "r", encoding="UTF-8").read().encode("UTF-8")).hexdigest()
+
+            m = hashlib.md5(
+                open("../addons.xml", "r", encoding="UTF-8").read().encode("UTF-8")
+            ).hexdigest()
 
         # save file
         try:
-            self._save_file(m.encode("UTF-8"), file="addons.xml.md5")
+            self._save_file(m.encode("UTF-8"), file="../addons.xml.md5")
         except Exception as e:
             # oops
             print("An error occurred creating addons.xml.md5 file!\n%s" % e)
@@ -106,6 +108,6 @@ class Generator:
             print("An error occurred saving %s file!\n%s" % (file, e))
 
 
-if (__name__ == "__main__"):
+if __name__ == "__main__":
     # start
     Generator()

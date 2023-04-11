@@ -1,4 +1,3 @@
-
 import os
 import sys
 import datetime
@@ -12,8 +11,21 @@ import xbmc, xbmcgui, xbmcaddon, xbmcplugin, xbmcvfs
 
 
 EXTS: Tuple = (".srt", ".sub", ".smi", ".ssa", ".ass", ".sup")
-SUPPORTED_ARCHIVE_EXTS: Tuple = (".zip", ".7z", ".tar", ".bz2", ".rar", ".gz", ".xz", ".iso", ".tgz", ".tbz2", ".cbr")
+SUPPORTED_ARCHIVE_EXTS: Tuple = (
+    ".zip",
+    ".7z",
+    ".tar",
+    ".bz2",
+    ".rar",
+    ".gz",
+    ".xz",
+    ".iso",
+    ".tgz",
+    ".tbz2",
+    ".cbr",
+)
 ACCESSIBLE_ARCHIVE_EXTS: Tuple = (".zip", ".rar")
+
 
 @dataclass
 class SubtitleSearchInput:
@@ -59,9 +71,13 @@ class SubtitleListItem:
     MAX_RATING: ClassVar[int] = 5
 
     def getXmbcListItem(self):
-        listitem = xbmcgui.ListItem(label=self.language_name,
-                                    label2=self.name)
-        listitem.setArt({'icon': str(min(self.rating, self.MAX_RATING)), 'thumb': self.language_flag})
+        listitem = xbmcgui.ListItem(label=self.language_name, label2=self.name)
+        listitem.setArt(
+            {
+                "icon": str(min(self.rating, self.MAX_RATING)),
+                "thumb": self.language_flag,
+            }
+        )
         return listitem
 
 
@@ -79,7 +95,9 @@ class SubtitleDownloadedFile:
         check if downloaded file is valid based on extension and size
         :return:
         """
-        return (self.is_subtitle() or self.is_supported_archive_exts()) and self.content_length > self.MIN_SIZE
+        return (
+            self.is_subtitle() or self.is_supported_archive_exts()
+        ) and self.content_length > self.MIN_SIZE
 
     def is_subtitle(self) -> bool:
         """
@@ -105,8 +123,7 @@ class SubtitleDownloadedFile:
 
 
 class SubtitleAdapterBase(ABC):
-
-    def __init__(self, addon:xbmcaddon.Addon):
+    def __init__(self, addon: xbmcaddon.Addon):
         """
         Construct a SubtitleAdapterBase
         :param addon: xmbcaddon, provide meta data of the addon
@@ -114,10 +131,12 @@ class SubtitleAdapterBase(ABC):
         __LOG_CATEGORY__ = "__INIT__"
 
         self._addon = addon
-        self._addon_id = self._addon.getAddonInfo('id')
-        self._addon_name = self._addon.getAddonInfo('name')
-        self._addon_profile = xbmcvfs.translatePath(self._addon.getAddonInfo('profile'))
-        self._addon_temp = xbmcvfs.translatePath(os.path.join(self._addon_profile, 'temp'))
+        self._addon_id = self._addon.getAddonInfo("id")
+        self._addon_name = self._addon.getAddonInfo("name")
+        self._addon_profile = xbmcvfs.translatePath(self._addon.getAddonInfo("profile"))
+        self._addon_temp = xbmcvfs.translatePath(
+            os.path.join(self._addon_profile, "temp")
+        )
 
     def log(self, category, msg, level=xbmc.LOGDEBUG):
         xbmc.log(f"[{self._addon_name}]::{category} - {msg}", level=level)
@@ -153,13 +172,13 @@ class SubtitleAdapterBase(ABC):
         subtitles_list = self.search(item)
         for it in subtitles_list:
             listitem = it.getXmbcListItem()
-            paramstring = urllib.parse.urlencode({
-                "action": "download",
-                "item_id": it.item_id
-            })
+            paramstring = urllib.parse.urlencode(
+                {"action": "download", "item_id": it.item_id}
+            )
             url = f"plugin://{self._addon_id}/?{paramstring}"
-            xbmcplugin.addDirectoryItem(handle=handle, url=url,
-                                        listitem=listitem, isFolder=False)
+            xbmcplugin.addDirectoryItem(
+                handle=handle, url=url, listitem=listitem, isFolder=False
+            )
         xbmcplugin.endOfDirectory(handle)
 
     def download_handler(self, handle: int, item_id: str):
@@ -174,16 +193,20 @@ class SubtitleAdapterBase(ABC):
         subtitle_file = self.download(item_id)
         subtitle_path = self.load(subtitle_file, self._addon_temp)
         if subtitle_path is None:
-            self.log(__LOG_CATEGORY__, f"Failed to download file with item_id: {item_id}", level=xbmc.LOGERROR)
+            self.log(
+                __LOG_CATEGORY__,
+                f"Failed to download file with item_id: {item_id}",
+                level=xbmc.LOGERROR,
+            )
 
         listitem = xbmcgui.ListItem(label=subtitle_path)
-        xbmcplugin.addDirectoryItem(handle=handle, url=subtitle_path,
-                                    listitem=listitem, isFolder=False)
+        xbmcplugin.addDirectoryItem(
+            handle=handle, url=subtitle_path, listitem=listitem, isFolder=False
+        )
 
         xbmcplugin.endOfDirectory(handle)
 
     def load(self, file: SubtitleDownloadedFile, tmp_path: str) -> Optional[str]:
-
         __LOG_CATEGORY__ = "LOAD"
 
         if not file.is_valid():
@@ -200,14 +223,18 @@ class SubtitleAdapterBase(ABC):
             # libarchive requires the access to the file, so sleep a while to ensure the file.
             xbmc.sleep(500)
             list_sub_files = self.unpack(store_path)
-            self.log(__LOG_CATEGORY__, f"list of sub file in archive file: {list_sub_files}")
+            self.log(
+                __LOG_CATEGORY__, f"list of sub file in archive file: {list_sub_files}"
+            )
 
             if len(list_sub_files) == 1:
                 return list_sub_files[0][1]
             elif len(list_sub_files) > 1:
                 dlist = [x[0] for x in list_sub_files]
 
-                self.log(__LOG_CATEGORY__, f"first two char in archive is {file.content[:2]}")
+                self.log(
+                    __LOG_CATEGORY__, f"first two char in archive is {file.content[:2]}"
+                )
                 # hack to fix encoding problem of zip file after Kodi 18
                 # TODO Do we need this ??
                 # if file.content[:2] == b'PK':
@@ -217,7 +244,7 @@ class SubtitleAdapterBase(ABC):
                 #     except:
                 #         dlist = [x[0] for x in list_sub_files]
 
-                sel = xbmcgui.Dialog().select('请选择压缩包中的字幕', dlist)
+                sel = xbmcgui.Dialog().select("请选择压缩包中的字幕", dlist)
                 if sel == -1:
                     sel = 0
                     # TODO: allow reselect?
@@ -245,7 +272,7 @@ class SubtitleAdapterBase(ABC):
 
         dist_path = os.path.join(
             base_path,
-            f"sub_{datetime.datetime.now().isoformat()}{sub_file.extension()}"
+            f"sub_{datetime.datetime.now().isoformat()}{sub_file.extension()}",
         )
         self.log(__LOG_CATEGORY__, f"saving file {sub_file.file_name} to {dist_path}")
         with open(dist_path, "wb") as saved_file:
@@ -269,7 +296,11 @@ class SubtitleAdapterBase(ABC):
         archive_filename = os.path.basename(archive_file_path)
 
         if archive_extension not in ACCESSIBLE_ARCHIVE_EXTS:
-            self.log(__LOG_CATEGORY__, f"Unknown file ext: {archive_filename}", level=xbmc.LOGERROR)
+            self.log(
+                __LOG_CATEGORY__,
+                f"Unknown file ext: {archive_filename}",
+                level=xbmc.LOGERROR,
+            )
             return []
 
         archive_fullpath = f"{archive_schema}://{urllib.parse.quote_plus(xbmcvfs.translatePath(archive_file_path))}"
@@ -284,7 +315,7 @@ class SubtitleAdapterBase(ABC):
             current_dirs, current_files = xbmcvfs.listdir(base_path)
 
             for current_dir in current_dirs:
-                if current_dir in ('__MACOSX', '.git'):
+                if current_dir in ("__MACOSX", ".git"):
                     continue
                 c = base.copy()
                 c.append(current_dir)
@@ -301,14 +332,11 @@ class SubtitleAdapterBase(ABC):
                 file_full_path = os.path.join(*c)
 
                 self.log(__LOG_CATEGORY__, f"Found subtitle: {file_full_path}")
-                all_sub_files.append(
-                    (title, file_full_path)
-                )
+                all_sub_files.append((title, file_full_path))
         self.log(__LOG_CATEGORY__, f"In total: {len(all_sub_files)} subtitles")
         return all_sub_files
 
-
-    def router(self, handle: int, paramstring:str):
+    def router(self, handle: int, paramstring: str):
         """
         Router for plugin requests
         :param handle: normally sys.argv[1]
@@ -319,29 +347,29 @@ class SubtitleAdapterBase(ABC):
 
         params = SubtitleAdapterBase._get_param_dict(paramstring)
         self.log(__LOG_CATEGORY__, f" request: {params}", level=xbmc.LOGINFO)
-        action = params['action']
+        action = params["action"]
 
-        if action == 'search' or action == 'manualsearch':
-            languages = params.get('languages').split(",")
-            preferredlanguage = params.get('preferredlanguage').split(",")
-            searchstring = params.get('searchstring', None)
-            self.search_handler(handle, SubtitleSearchInput(languages, preferredlanguage, searchstring))
+        if action == "search" or action == "manualsearch":
+            languages = params.get("languages").split(",")
+            preferredlanguage = params.get("preferredlanguage").split(",")
+            searchstring = params.get("searchstring", None)
+            self.search_handler(
+                handle, SubtitleSearchInput(languages, preferredlanguage, searchstring)
+            )
 
-        elif action == 'download':
+        elif action == "download":
             self.download_handler(handle, params["item_id"])
         else:
             self.log(__LOG_CATEGORY__, f" unknow action: {action}", level=xbmc.LOGERROR)
 
-
     @staticmethod
     def _get_param_dict(paramstring):
         from urllib import parse
-        url_query = paramstring.replace('?', '')
+
+        url_query = paramstring.replace("?", "")
 
         if len(url_query) >= 1:
-            if url_query[-1] == '/':
+            if url_query[-1] == "/":
                 url_query = url_query[0:-1]
 
         return dict(parse.parse_qsl(url_query))
-
-

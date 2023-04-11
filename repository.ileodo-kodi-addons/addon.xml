@@ -1,22 +1,25 @@
 <?xml version="1.0" ?>
-<addon id="repository.ileodo-kodi-addons" name="iLeoDo Kodi Addons" provider-name="iLeoDo" version="0.0.1">
+<addon id="repository.ileodo-kodi-addons" name="iLeoDo Kodi Addons" provider-name="iLeoDo" version="0.0.2">
     <extension name="iLeoDo Kodi Addons" point="xbmc.addon.repository">
         <info compressed="true">https://github.com/ileodo/kodi-addons/raw/main/addons.xml</info>
         <checksum>https://github.com/ileodo/kodi-addons/raw/main/addons.xml.md5</checksum>
         <datadir zip="true">https://github.com/ileodo/kodi-addons/raw/main/dest</datadir>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary>iLeoDo's Add-ons Repository For Kodi</summary>
+        <summary lang="en">iLeoDo's Add-ons Repository For Kodi</summary>
         <summary lang="zh">iLeoDo的插件库</summary>
-        <description>Serving a bunch of Kodi addons for research/testing purpose.</description>
+        <description lang="en">Serving a bunch of Kodi addons for research/testing purpose.</description>
         <description lang="zh">提供一些供测试和研究使用的Kodi插件</description>
-        <disclaimer>This repo is for personal research and testing only. iLeoDo is not responsible for any misuse of this repo</disclaimer>
+        <disclaimer lang="en">This repo is for personal research and testing only. iLeoDo is not responsible for any misuse of this repo</disclaimer>
         <disclaimer lang="zh">本库仅供个人研究和测试使用，iLeoDo不承担任何责任</disclaimer>
         <platform>all</platform>
         <assets>
             <icon>icon.png</icon>
         </assets>
-        <news>V0.0.1 (2021-04-18)
+        <news>V0.0.2 (2023-04-11)
+- Update dependencies
+
+V0.0.1 (2021-04-18)
 - Initial Version</news>
     </extension>
 </addon>
